@@ -31,7 +31,7 @@ let isSafe2 = (level, err) => {
       if (err) {
         return false;
       }
-      // skip current level, previous level, or keep it the same (no removal)
+      // skip current level, previous level, or first if wrong direction
       return (
         isSafe2(level.toSpliced(i, 1), true) ||
         isSafe2(level.toSpliced(i - 1, 1), true) ||
