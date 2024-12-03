@@ -42,34 +42,27 @@ let isSafe2 = (level, err) => {
   return true;
 };
 
-const solve1 = (input) => {
+const solve = (input, part) => {
   let rows = input.split("\n");
   let res = 0;
   for (let row of rows) {
     const level = row.split(" ").map(Number);
-    if (isSafe1(level)) {
-      res++;
+    if (part === 1) {
+      if (isSafe1(level)) {
+        res++;
+      }
+    } else {
+      if (isSafe2(level)) {
+        res++;
+      }
     }
   }
 
   return res;
 };
 
-const solve2 = (input) => {
-  let rows = input.split("\n");
-  let res = 0;
-  for (let row of rows) {
-    const level = row.split(" ").map(Number);
-    if (isSafe2(level)) {
-      res++;
-    }
-  }
-
-  return res;
-};
-
-console.log(solve1(input));
-console.log(solve2(input));
+console.log(solve(input, 1));
+console.log(solve(input, 2));
 
 const sampleInput = `7 6 4 2 1
 1 2 7 8 9
@@ -78,4 +71,4 @@ const sampleInput = `7 6 4 2 1
 8 6 4 4 1
 1 3 6 7 9`;
 
-console.log(solve2(sampleInput));
+console.log(solve(sampleInput, 2));
