@@ -9,13 +9,21 @@ const dirs = [
   [0, -1],
 ];
 
-const moveGuard = (grid, start) => {
+const moveGuard = (grid, start, part) => {
   let [y, x] = start;
   let dirsIdx = 0;
 
   let count = 0;
 
+  const seen = new Set();
+
   while (grid[y]?.[x] !== "#") {
+    // cycle
+    let key = `${y}, ${x}`;
+    if (seen.has(key) && part == 2) {
+      return 1;
+    }
+
     // went out of bounds
     if (grid[y]?.[x] === undefined) {
       grid.forEach((row) =>
@@ -25,10 +33,12 @@ const moveGuard = (grid, start) => {
           }
         })
       );
-      return count;
+      // console.log(Array.from(seen).length);
+      return part == 1 ? count : 0;
     }
 
     grid[y][x] = "X";
+    seen.add(key);
 
     let nextY = y + dirs[dirsIdx][0];
     let nextX = x + dirs[dirsIdx][1];
@@ -43,13 +53,15 @@ const moveGuard = (grid, start) => {
       x = nextX;
     }
   }
-
-  return count;
+  // for part 2
+  if (part == 2) {
+    return 0;
+  }
 };
 
 const solve = (input) => {
   let start;
-  const grid = input.split("\n").map((row, r) => {
+  const grid1 = input.split("\n").map((row, r) => {
     return row.split("").map((char, c) => {
       if (char === "^") {
         start = [r, c];
@@ -59,9 +71,27 @@ const solve = (input) => {
     });
   });
 
-  console.log(moveGuard(grid, start));
+  const grid2 = input.split("\n").map((row, r) => {
+    return row.split("").map((char, c) => {
+      if (char === "^") {
+        start = [r, c];
+      }
 
-  console.log(grid);
+      return char === "#" ? "#" : ".";
+    });
+  });
+
+  console.log(moveGuard(grid1, start, 1));
+
+  let count = 0;
+  for (let r = 0; r < grid2.length; r++) {
+    for (let c = 0; c < grid2[0].length; c++) {
+      grid2[r][c] = "#";
+      count += moveGuard(grid2, start, 2);
+      grid2[r][c] = ".";
+    }
+  }
+  console.log(count);
 };
 
 const sampleInput = `....#.....
@@ -75,7 +105,7 @@ const sampleInput = `....#.....
 #.........
 ......#...`;
 
-solve(sampleInput);
+solve(input);
 
 /* grid output from sample input
 [
